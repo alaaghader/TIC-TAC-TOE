@@ -1,21 +1,49 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text } from 'react-native';
+import * as Font from "expo-font";
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import homePage from "./components/homePage";
+import playGame from "./components/playGame";
+import rules from "./components/rules";
 
-export default function App() {
+const fetchFont = () => {
+  return Font.loadAsync({
+    "YellowtailRegular": require("./assets/fonts/Yellowtail-Regular.ttf"),
+  });
+};
+
+const App = () => {
+  const [fontLoaded, setFontLoaded] = useState(false);
+  const Stack = createStackNavigator();
+  useEffect(() => {
+    fetchFont().then(() => setFontLoaded(true));
+  });
+
+  if (!fontLoaded)
+    return <Text>Loading</Text>
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false
+        }}
+      >
+        <Stack.Screen
+          name="Home"
+          component={homePage}
+        />
+        <Stack.Screen
+          name="Game"
+          component={playGame}
+        />
+        <Stack.Screen
+          name="Rules"
+          component={rules}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App
